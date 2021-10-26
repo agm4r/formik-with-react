@@ -1,14 +1,29 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useEffect } from "react";
+import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import * as Yup from 'yup'
 
 const initialValues = {
   name: 'Agmar Putra',
   email: '',
   channel: '',
+  password: ''
 }
 
 const onSubmit = values => {
   console.table(values)
+}
+
+const AutoSubmitPassword = () => {
+  const {values, submitForm} = useFormikContext()
+
+  useEffect(() => {
+    if (values.password === 'admin123') {
+      submitForm()
+    }
+  }, [values, submitForm])
+
+  return null
+
 }
 
 
@@ -21,6 +36,9 @@ const validationSchema = Yup.object({
     .email()
     .required(),
   channel: Yup
+    .string()
+    .required(),
+  password: Yup
     .string()
     .required()
 })
@@ -40,7 +58,7 @@ const YoutubeForm = () => {
             id="name" 
             name="name" 
           />
-          <ErrorMessage className="error" name="name" />
+          <ErrorMessage name="name" />
         </div>
 
         <div className="form-control">
@@ -63,7 +81,16 @@ const YoutubeForm = () => {
           <ErrorMessage name="channel" />
         </div>
 
-        <button type="submit">Submit</button>
+        <div className="form-control">
+          <label htmlFor="password">Password</label>
+          <Field 
+           type="password" 
+           id="password" 
+           name="password" 
+          />
+          <ErrorMessage name="password" />
+        </div>
+        <AutoSubmitPassword />
       </Form>
     </Formik>
   );
